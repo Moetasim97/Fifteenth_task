@@ -1,0 +1,57 @@
+.card_wrapper img {
+  width: 265px;
+  height: 290px;
+}
+.card_wrapper .card_body {
+  min-height: 200px;
+}
+
+.border {
+  border-left: 1px solid whitesmoke;
+  border-right: 1px solid whitesmoke;
+  border-bottom: 1px solid whitesmoke;
+  border-top: 0px;
+}
+
+.negative_mar {
+  margin-top: -30px;
+}
+
+.custom_height {
+  height: 100px;
+}
+
+.fit-content {
+  width: -moz-fit-content;
+  width: fit-content;
+}
+
+.imdb_rating {
+  font-size: 18px;
+  font-weight: 400;
+  color: black;
+}
+
+.modal_background {
+  z-index: 1;
+  opacity: 1;
+  display: none;
+  background-color: rgba(128, 125, 125, 0.8);
+  height: 100%;
+  width: 100%;
+  position: fixed;
+}
+.modal_background .modal_content {
+  background-color: white;
+  position: fixed;
+  background-color: white;
+  height: 300px;
+  width: 600px;
+  top: 20%;
+  left: 25%;
+  z-index: 2;
+}
+.modal_background img {
+  width: 220px;
+  height: 300px;
+}/*# sourceMappingURL=styles.css.map */
