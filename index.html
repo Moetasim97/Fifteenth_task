@@ -1,0 +1,374 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Top-Rated Movies</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="css/styles.css">
+
+</head>
+
+<body>
+  <div class="h2 mx-5 mb-3 mt-2">Movies</div>
+  <div class="custom_width border mx-5 mb-4 pb-2 px-3" >
+    <div class="h3">Stats</div>
+    <div><span>Current Page: </span><span class="page"></span></div>
+    <div class="d-flex">Number of movies:<div class="movie_no"></div></div>
+    <div class="d-flex">Top rated movie:<div class="rated_movie"></div></div >
+    <div class="d-flex">Rating:<div class="top_rate"></div></div>
+
+  </div>
+    <div class="container">
+        <div class="row">
+        </div>
+        <footer>
+          <div class="d-flex justify-content-center mb-5 mt-3">
+            <button class="btn first btn-light border border-secondary">Previous</button>
+            <button class="btn second btn-light border border-secondary">Next</button>
+          </div>
+        </footer>
+    </div>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+
+var eventsMediator = {
+  events: {},
+  on: function (eventName, callbackfn) {
+    this.events[eventName] = this.events[eventName]
+      ? this.events[eventName]
+      : [];
+    this.events[eventName].push(callbackfn);
+  },
+  emit: function (eventName, data) {
+    if (this.events[eventName]) {
+      this.events[eventName].forEach(function (callBackfn) {
+        callBackfn(data);
+      });
+    }
+  },
+};
+
+
+// Mediator object ####################################################################################
+    var model=[{}]
+    
+    var page_number=0;
+   
+    var controller={
+      which_page:0,
+      init:function(){
+       
+        $.ajax({type:"GET"
+    ,url:"https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1",
+    error:function(xhr){
+      console.log("false")
+    },
+    success:function(data,status,xhr){
+      
+
+      for (let u = 0; u<data.results.length;u++){
+      
+        model[u]={movie_image:data.results[u].poster_path}
+        model[u]["movie title"]=data.results[u].title
+        model[u]["movie summary"]=data.results[u].overview
+        model[u]["movie rating"]=data.results[u].vote_average
+      }
+     eventsMediator.emit("model finished loading",model)
+    },
+    headers:{
+      accept: 'application/json',
+      Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlYWE3NDFmNGRlMWQ1NWE3MjlmNDc0ZTlmYWZhMDhiOSIsInN1YiI6IjY0NzcyZDhiMjU1ZGJhMDEyOWNlMzdiMCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.sOGQ6the-Xg0E6xzsxofCl-Fh0p1ws1Reg3ffKNH-Cg'
+    }
+
+  }
+  )
+      },
+      load_data:function(){
+        
+       if(document.querySelector("i")){
+        console.log("there are icons")
+       }
+        console.log(controller.which_page)
+        var another_counter=0;
+        if(controller.which_page==2){
+          another_counter=20
+          
+          if($(".card_body")){
+            $(".card_body").empty()
+          }
+          if($(".movie_title")){
+            $(".movie_title").empty()
+          }
+          if($(".movie_rating")){
+            $(".movie_rating").empty()
+          }
+        }
+        else if(controller.which_page==1){
+          another_counter=0
+          
+          if($(".card_body")){
+            $(".card_body").empty()
+          }
+          if($(".movie_title")){
+            $(".movie_title").empty()
+          }
+          if($(".movie_rating")){
+            $(".movie_rating").empty()
+          }
+
+        }
+
+        
+        
+        $("document").ready(function(){
+          var counter=0;
+          
+          
+          debugger;
+          for(var i=another_counter;i<model.length;i++){
+            
+            
+            document.querySelectorAll(".card_body")[counter].innerHTML+=(`<img src=https://image.tmdb.org/t/p/w780/`+model[another_counter].movie_image+`>`)
+            document.querySelectorAll(".movie_title")[counter].textContent=model[another_counter]["movie title"]
+            document.querySelectorAll(".movie_rating")[counter].textContent=model[another_counter]["movie rating"]
+            another_counter++
+            counter++
+            
+            
+          }
+          // The following  code will update the information found in the status box up top
+          
+          if(document.querySelector(".row") || page_number==1){
+            page_number=1;
+
+          }
+         if(controller.which_page==2){
+            page_number=2;
+          }
+
+          if(page_number==1){
+      
+            var best_rating=0;
+          var top_movie="empty"
+          for(var i=0; i<20;i++){
+            
+            if(best_rating<=model[i]["movie rating"]){
+              best_rating=model[i]["movie rating"]
+              top_movie=model[i]["movie title"]
+            }
+          }
+          
+          $(".page").empty()
+          $(".page").append("1")
+          $(".movie_no").empty()
+          $(".movie_no").empty()
+          $(".movie_no").append(model.length)
+          $(".rated_movie").empty()
+          $(".rated_movie").append(best_rating)
+          $(".top_rate").empty()
+          $(".top_rate").append(top_movie)
+          console.log(controller.which_page)
+          eventsMediator.emit("first.page.rendered",model)
+           
+        }
+        else{
+          var best_rating=0;
+          var top_movie="empty"
+          for(var i=20; i<40;i++){
+            
+            if(best_rating<=model[i]["movie rating"]){
+              best_rating=model[i]["movie rating"]
+              top_movie=model[i]["movie title"]
+            }
+          }
+          
+          $(".page").empty()
+          $(".page").append("2")
+          $(".movie_no").empty()
+          $(".movie_no").empty()
+          $(".movie_no").append(model.length)
+          $(".rated_movie").empty()
+          $(".rated_movie").append(best_rating)
+          $(".top_rate").empty()
+          $(".top_rate").append(top_movie)
+          
+        }
+        
+          
+          
+        }
+        )
+      }
+    }
+// view object 
+    var view={
+      init:function(){
+        
+
+        $("body").append(`<div class="modal_background">
+      <div class="modal_content">
+      <div class=" d-flex justify-content-end negative_mar">
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-x " viewBox="0 0 16 16">
+          <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+        </svg>
+      </div>
+      <div class="d-flex">
+        <img src="https://image.tmdb.org/t/p/w780//" class="img-fluid">
+      <div class="modal_body">
+        <div class="modal_title h4 mt-3 " align="center">
+          
+        </div>
+        <span class="imdb_rating mx-3  "> IMDB Rating:</span><span class="rating imdb_rating"></span><span class="imdb_rating">/10</span>
+        <div class="modal_description mx-3 mt-3">
+
+        </div>
+          </div>
+      </div>
+  </div>
+</div>`)
+
+
+        for(var y=0; y<model.length;y++){
+          
+          
+          $(".row").append(`<div class="col-md-3   ">
+                <div class=" card_wrapper mb-4">
+                    <div class="card_body d-flex justify-content-center">
+                      
+                    </div>
+                    <div class="border  custom_height">
+                    <div class="movie_title pt-3" align="center">
+                    </div>
+                    <div class="movie_rating" align="center"></div>
+                  </div>
+                </div>
+            </div>`)
+        }
+        
+        eventsMediator.on("first.page.rendered",function(model){
+          $(".btn.first").on("click",function(){
+            $(".row").removeClass(".second")
+            $(".row").addClass(".first")
+            console.log("this is the first page")
+            controller.which_page=1
+            //the following code loads the data to display the movies of the first page
+            debugger;
+            controller.load_data()
+            view.render()
+            
+            
+          })
+          $(".btn.second").on("click",function(){
+            $(".row").removeClass(".first")
+            $(".row").addClass(".second")
+            controller.which_page=2
+            
+            
+//the following on function makes an api call and retrieves the list of the next 20 movies
+            eventsMediator.on("second.page",function(model){
+
+              
+              
+
+$.ajax({
+  type:"GET",
+  url:"https://api.themoviedb.org/3/movie/popular?language=en-US&page=1",
+  error:function(xhr)
+  {
+    console.log(xhr)
+  },
+  success:function(data)
+  {
+    
+    var initial_model=model.length*2;
+    var model_index=0
+    for (let u=model.length; u<initial_model;u++){
+      
+          
+          model[u]={movie_image:data.results[model_index].backdrop_path}
+          model[u]["movie title"]=data.results[model_index].title
+          model[u]["movie summary"]=data.results[model_index].overview
+          model[u]["movie rating"]=data.results[model_index].vote_average
+          model_index++
+            }
+            
+            console.log(model)
+            // the following function call returns the data of the next 20 movies and renders them
+            controller.load_data()
+            
+  },
+  headers:{
+    accept: 'application/json',
+    Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlYWE3NDFmNGRlMWQ1NWE3MjlmNDc0ZTlmYWZhMDhiOSIsInN1YiI6IjY0NzcyZDhiMjU1ZGJhMDEyOWNlMzdiMCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.sOGQ6the-Xg0E6xzsxofCl-Fh0p1ws1Reg3ffKNH-Cg'
+  }
+})
+})
+
+eventsMediator.emit("second.page",model)
+          })
+        }
+        )
+        view.add_listeners()
+        view.mount_close_modal()
+      },
+
+      render:function(){
+        eventsMediator.on("model finished loading",function(model){
+      
+      if(model.length>1){
+        return view.init()
+      }
+     }
+     )
+      },
+      mount_close_modal:function(){
+       
+        var x=document.querySelector(".bi.bi-x")
+        x.addEventListener("click",function(e){
+          var modal=document.querySelector(".modal_background")
+          modal.style.display="none"
+        })
+      },
+      add_listeners:function(){
+        var cards=document.querySelectorAll(".card_wrapper")
+        cards.forEach((card,index)=>{
+
+          card.addEventListener("click",function(){
+            var modal=document.querySelector(".modal_background")
+            var modal_img=document.querySelector(".img-fluid")
+            var modal_title=document.querySelector(".modal_title")
+            var modal_description=document.querySelector(".modal_description")
+            var rating=document.querySelector(".rating.imdb_rating")
+            modal.style.display="block"
+            
+            modal_img.src=`https://image.tmdb.org/t/p/w780//`+model[index].movie_image
+            modal_title.textContent=model[index]["movie title"]
+            modal_description.textContent=model[index]["movie summary"]
+            rating.textContent=model[index]['movie rating']
+            
+          })
+        })
+      },
+      mount_pagination:function(){
+        //this function will mount the page navigators with event listeners 
+
+        eventsMediator.emit("first.page.rendered",model)
+      
+      }
+    }
+    controller.init();
+    view.render()
+    controller.load_data()
+    view.mount_pagination()
+  </script>
+</body>
+</html>
